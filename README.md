@@ -135,4 +135,11 @@ node scripts/seed.js
 
 ---
 
+## 🤝 Contributors
+- **Vaishnavi Mekle**
+- **Shravani Karhe**
+- **Anushka Jagtap** *(Implicitly based on repo owner)*
+
+---
+
 > Built for the future of Hackathons. Happy Coding. 🚀
