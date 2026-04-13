@@ -8,7 +8,7 @@ export default function UserCard({ user }) {
 
   return (
     <Link
-      to={user.username ? `/u/${user.username}` : '#'}
+      to={user.username ? `/u/${user.username}` : `/u/${user._id}`}
       style={{ textDecoration: 'none' }}
     >
       <div className="card" style={{

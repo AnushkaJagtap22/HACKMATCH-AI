@@ -238,11 +238,57 @@ router.delete('/projects/:projectId', protect, async (req, res) => {
 // ── GET /api/profile/:username (public) ──────────────────────
 router.get('/:username', async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.params.username, isPublic: true });
+    const mongoose = require('mongoose');
+    const query = { isPublic: true };
+    if (mongoose.Types.ObjectId.isValid(req.params.username)) {
+      query.$or = [
+        { username: req.params.username },
+        { _id: req.params.username }
+      ];
+    } else {
+      query.username = req.params.username;
+    }
+
+    const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'Profile not found' });
     res.json({ user: user.toSafeObject() });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// ── POST /api/profile/:id/outreach ────────────────────────────
+router.post('/:id/outreach', protect, async (req, res) => {
+  try {
+    const targetUserId = req.params.id;
+    if (targetUserId === req.user._id.toString()) {
+      return res.status(400).json({ error: "Cannot send outreach to yourself" });
+    }
+    
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) return res.status(404).json({ error: 'User not found' });
+
+    const sender = await User.findById(req.user._id);
+
+    // Notify the target user
+    await targetUser.addNotification(
+      'invitation',
+      'Team Outreach Request',
+      `${sender.fullName} wants you to be a part of their team!`,
+      { senderId: sender._id, senderName: sender.fullName }
+    );
+
+    const { notifyUser } = require('../services/socketManager');
+    notifyUser(targetUser._id, 'notification', {
+      type: 'invitation',
+      title: 'Team Outreach Request',
+      message: `${sender.fullName} wants you to be a part of their team!`
+    });
+
+    res.json({ success: true, message: 'Outreach message sent successfully' });
+  } catch (err) {
+    console.error('Outreach error:', err);
+    res.status(500).json({ error: 'Failed to send outreach' });
   }
 });
 

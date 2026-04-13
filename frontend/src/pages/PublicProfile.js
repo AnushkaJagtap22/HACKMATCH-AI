@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { profileAPI } from '../utils/api';
 import ProjectCard from '../components/profile/ProjectCard';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -10,6 +12,8 @@ export default function PublicProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { user: currentUser } = useAuth();
+  const [sendingOutreach, setSendingOutreach] = useState(false);
 
   useEffect(() => {
     profileAPI.getPublic(username)
@@ -19,6 +23,18 @@ export default function PublicProfile() {
       })
       .finally(() => setLoading(false));
   }, [username]);
+
+  const handleOutreach = async () => {
+    try {
+      setSendingOutreach(true);
+      await profileAPI.sendOutreach(user._id);
+      toast.success('Outreach message sent!');
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to send outreach');
+    } finally {
+      setSendingOutreach(false);
+    }
+  };
 
   if (loading) return (
     <div className="loading-center" style={{ minHeight: '100vh' }}>
@@ -159,7 +175,21 @@ export default function PublicProfile() {
           <p style={{ marginBottom: '1rem' }}>
             Want to team up with <strong style={{ color: 'var(--text)' }}>{user.fullName}</strong>?
           </p>
-          <Link to="/register" className="btn btn-primary">Create your HackMatch profile →</Link>
+          {currentUser ? (
+            currentUser._id !== user._id ? (
+              <button 
+                className="btn btn-primary" 
+                onClick={handleOutreach} 
+                disabled={sendingOutreach}
+              >
+                {sendingOutreach ? 'Sending...' : 'Send Outreach Message →'}
+              </button>
+            ) : (
+              <p style={{ color: 'var(--text-3)' }}>This is your public profile.</p>
+            )
+          ) : (
+            <Link to="/register" className="btn btn-primary">Create your HackMatch profile →</Link>
+          )}
         </div>
       </div>
     </div>

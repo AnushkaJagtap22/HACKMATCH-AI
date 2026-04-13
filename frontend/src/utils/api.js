@@ -53,6 +53,7 @@ export const profileAPI = {
   updateProject: (id, data) => api.put(`/profile/projects/${id}`, data),
   deleteProject: (id) => api.delete(`/profile/projects/${id}`),
   getPublic: (username) => api.get(`/profile/${username}`),
+  sendOutreach: (id) => api.post(`/profile/${id}/outreach`),
 };
 
 export const usersAPI = {
