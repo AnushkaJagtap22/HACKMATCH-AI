@@ -1,0 +1,18 @@
+{
+  "name": "hackmatch",
+  "version": "2.0.0",
+  "description": "HackMatch AI — Full-Stack Platform",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev:backend":  "npm run dev --prefix backend",
+    "dev:frontend": "npm start --prefix frontend",
+    "dev": "concurrently -n 'API,WEB' -c 'cyan,magenta' \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run build --prefix frontend",
+    "seed": "node backend/scripts/seed.js",
+    "setup": "cp -n backend/.env.example backend/.env 2>/dev/null || true && cp -n frontend/.env.example frontend/.env 2>/dev/null || true && echo '✅ .env files ready — edit backend/.env before running'"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
