@@ -21,17 +21,6 @@
 
 ## 📸 Screenshots
 
-> *Note: Place your screenshot images in a `/docs/images/` directory and uncomment the lines below to render.*
-
-<!-- 
-| Dashboard | Profile & Resume Parsing |
-|:---:|:---:|
-| ![Dashboard Dashboard](./docs/images/dashboard-demo.png) | ![Profile Editing](./docs/images/profile-demo.png) |
-
-| AI Matching Results | Real-Time Chat Assistant |
-|:---:|:---:|
-| ![Matching Engine](./docs/images/matching-demo.png) | ![AI Assistant](./docs/images/chat-demo.png) | 
--->
 
 ---
 
