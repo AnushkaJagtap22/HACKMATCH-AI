@@ -1,0 +1,11 @@
+node_modules/
+.env
+uploads/avatars/*
+uploads/resumes/*
+!uploads/avatars/.gitkeep
+!uploads/resumes/.gitkeep
+*.log
+npm-debug.log*
+.DS_Store
+dist/
+coverage/
