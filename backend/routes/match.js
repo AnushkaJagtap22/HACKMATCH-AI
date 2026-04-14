@@ -136,13 +136,83 @@ router.post('/rebalance', protect, async (req, res) => {
 router.post('/accept', protect, async (req, res) => {
   try {
     const { teamId } = req.body;
+    
+    // Fetch the team record to notify other members
+    const userDoc = await User.findById(req.user._id);
+    const teamRecord = userDoc.teamHistory?.find(t => t.teamId === teamId);
+
+    if (teamRecord) {
+      const otherMembers = teamRecord.members.filter(m => m.userId.toString() !== req.user._id.toString());
+      for (const member of otherMembers) {
+        const otherUser = await User.findById(member.userId);
+        if (otherUser) {
+          await otherUser.addNotification(
+            'invitation',
+            'You were selected for a team!',
+            `${userDoc.fullName} used AI matching and you were selected to join their team. Would you like to join?`,
+            { teamId, inviterId: req.user._id, inviterName: userDoc.fullName, isTeamInvite: true }
+          );
+          notifyUser(otherUser._id, 'notification', { 
+            type: 'invitation', 
+            title: 'You were selected for a team!', 
+            message: `${userDoc.fullName} selected you for a team.` 
+          });
+        }
+      }
+    }
+
     await User.updateOne(
       { _id: req.user._id, 'teamHistory.teamId': teamId },
       { $set: { 'teamHistory.$.status': 'accepted', currentTeamId: teamId } }
     );
-    res.json({ success: true, message: 'Team accepted' });
+    res.json({ success: true, message: 'Team accepted and invitations sent to members.' });
   } catch (err) {
+    console.error('Accept team error:', err);
     res.status(500).json({ error: 'Failed to accept team' });
+  }
+});
+
+// ── POST /api/match/respond-invite — Respond to an AI team invite ──
+router.post('/respond-invite', protect, async (req, res) => {
+  try {
+    const { teamId, inviterId, accept } = req.body;
+    const responder = await User.findById(req.user._id);
+    const inviter = await User.findById(inviterId);
+
+    if (!inviter) return res.status(404).json({ error: 'Inviter not found' });
+
+    if (accept) {
+      await inviter.addNotification(
+        'team_updated',
+        'Team Invitation Accepted',
+        `${responder.fullName} has accepted your team invitation!`,
+        { teamId, responderId: req.user._id }
+      );
+      notifyUser(inviterId, 'notification', { 
+        type: 'team_updated', 
+        title: 'Team Invitation Accepted', 
+        message: `${responder.fullName} accepted your invite!` 
+      });
+      // Update responder's currentTeamId
+      await User.updateOne({ _id: req.user._id }, { currentTeamId: teamId });
+      res.json({ success: true, message: 'Invitation accepted' });
+    } else {
+      await inviter.addNotification(
+        'team_updated',
+        'Team Invitation Declined',
+        `${responder.fullName} declined your team invitation.`,
+        { teamId, responderId: req.user._id }
+      );
+      notifyUser(inviterId, 'notification', { 
+        type: 'team_updated', 
+        title: 'Team Invitation Declined', 
+        message: `${responder.fullName} declined your invite.` 
+      });
+      res.json({ success: true, message: 'Invitation declined' });
+    }
+  } catch (err) {
+    console.error('Respond invite error:', err);
+    res.status(500).json({ error: 'Failed to respond to invitation' });
   }
 });
 

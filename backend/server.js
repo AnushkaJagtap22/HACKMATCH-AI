@@ -14,6 +14,7 @@ const userRoutes         = require('./routes/user');
 const matchRoutes        = require('./routes/match');
 const chatRoutes         = require('./routes/chat');
 const notifRoutes        = require('./routes/notifications');
+const teamChatRoutes     = require('./routes/teamChat');
 const { initSocket }     = require('./services/socketManager');
 
 const app = express();
@@ -59,6 +60,7 @@ app.use('/api/users',         userRoutes);
 app.use('/api/match',         matchRoutes);
 app.use('/api/chat',          chatRoutes);
 app.use('/api/notifications', notifRoutes);
+app.use('/api/team-chat',     teamChatRoutes);
 
 // ── Health ────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

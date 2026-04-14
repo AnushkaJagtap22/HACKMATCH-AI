@@ -63,6 +63,7 @@ export const SocketProvider = ({ children }) => {
       });
 
       socket.on('notification', (data) => {
+        toast(data.title ? `${data.title}: ${data.message}` : data.message || 'New notification received!', { icon: '🔔' });
         window.dispatchEvent(new CustomEvent('hm:notification', { detail: data }));
       });
 

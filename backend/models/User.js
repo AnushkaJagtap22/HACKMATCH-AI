@@ -79,8 +79,6 @@ const UserSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
 UserSchema.index({ skills: 1 });
 UserSchema.index({ experienceLevel: 1 });
 UserSchema.index({ isPublic: 1, lookingForTeam: 1 });

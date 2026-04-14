@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { notificationsAPI } from '../../utils/api';
+import { notificationsAPI, matchAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
 
 const ICONS = {
@@ -78,6 +78,25 @@ export default function NotificationsPanel({ onCountChange }) {
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (_) {}
+  };
+
+  const handleRespondInvite = async (e, n, accept) => {
+    e.stopPropagation();
+    try {
+      setLoading(true);
+      await matchAPI.respondInvite({
+        teamId: n.data.teamId,
+        inviterId: n.data.inviterId,
+        accept
+      });
+      await handleReadOne(n._id);
+      toast.success(accept ? 'Invitation accepted!' : 'Invitation declined');
+      fetchNotifications();
+    } catch (err) {
+      toast.error('Failed to respond to invitation');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const timeAgo = (date) => {
@@ -201,6 +220,28 @@ export default function NotificationsPanel({ onCountChange }) {
                   <div style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
                     {timeAgo(n.createdAt)}
                   </div>
+                  {n.type === 'invitation' && n.data?.isTeamInvite && !n.read && (
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                      <button 
+                        disabled={loading}
+                        onClick={(e) => handleRespondInvite(e, n, true)}
+                        style={{
+                          background: 'var(--teal)', color: '#fff', border: 'none', 
+                          padding: '4px 12px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer'
+                        }}>
+                        Accept
+                      </button>
+                      <button 
+                        disabled={loading}
+                        onClick={(e) => handleRespondInvite(e, n, false)}
+                        style={{
+                          background: 'transparent', color: 'var(--rose)', border: '1px solid var(--rose)', 
+                          padding: '4px 12px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer'
+                        }}>
+                        Decline
+                      </button>
+                    </div>
+                  )}
                 </div>
                 {!n.read && (
                   <div style={{

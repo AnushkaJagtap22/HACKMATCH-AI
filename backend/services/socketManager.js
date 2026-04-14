@@ -68,6 +68,19 @@ function initSocket(server) {
       }
     });
 
+    socket.on('join_team_room', (data) => {
+      if (data?.teamId) {
+        socket.join(`team:${data.teamId}`);
+        console.log(`🔌 Socket ${socket.id} joined team ${data.teamId}`);
+      }
+    });
+
+    socket.on('leave_team_room', (data) => {
+      if (data?.teamId) {
+        socket.leave(`team:${data.teamId}`);
+      }
+    });
+
     socket.on('disconnect', () => {
       console.log(`🔌 Socket disconnected: user=${userId}`);
       userSockets.get(userId)?.delete(socket.id);
@@ -109,4 +122,12 @@ function getOnlineCount() {
   return userSockets.size;
 }
 
-module.exports = { initSocket, notifyUser, broadcast, isOnline, getOnlineCount };
+/**
+ * Send a notification to a specific team room.
+ */
+function notifyTeam(teamId, event, data) {
+  if (!io) return;
+  io.to(`team:${String(teamId)}`).emit(event, data);
+}
+
+module.exports = { initSocket, notifyUser, notifyTeam, broadcast, isOnline, getOnlineCount };

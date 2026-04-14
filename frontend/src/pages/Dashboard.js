@@ -8,6 +8,7 @@ import ProjectCard from '../components/profile/ProjectCard';
 import AddProjectModal from '../components/profile/AddProjectModal';
 import MatchResults from '../components/matching/MatchResults';
 import ChatAssistant from '../components/chat/ChatAssistant';
+import TeamChat from '../components/chat/TeamChat';
 import toast from 'react-hot-toast';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
@@ -282,9 +283,10 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* Chat assistant */}
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            {/* Chat assistant & Team Chat */}
+            <div style={{ display: 'grid', gridTemplateColumns: p?.currentTeamId ? '1fr 1fr' : '1fr', gap: '1.5rem', maxWidth: p?.currentTeamId ? 'none' : '400px' }}>
               <ChatAssistant />
+              {p?.currentTeamId && <TeamChat teamId={p.currentTeamId} />}
             </div>
           </div>
 

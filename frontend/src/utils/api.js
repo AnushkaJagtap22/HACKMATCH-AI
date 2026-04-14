@@ -67,6 +67,7 @@ export const matchAPI = {
   accept: (teamId) => api.post('/match/accept', { teamId }),
   reject: (teamId) => api.post('/match/reject', { teamId }),
   rebalance: (teamId, memberIds) => api.post('/match/rebalance', { teamId, memberIds }),
+  respondInvite: (data) => api.post('/match/respond-invite', data),
 };
 
 export const chatAPI = {
@@ -79,6 +80,11 @@ export const notificationsAPI = {
   readAll: () => api.put('/notifications/read-all'),
   readOne: (id) => api.put(`/notifications/${id}/read`),
   clearAll: () => api.delete('/notifications/all'),
+};
+
+export const teamChatAPI = {
+  getHistory: (teamId) => api.get(`/team-chat/history/${teamId}`),
+  send: (teamId, text) => api.post('/team-chat/send', { teamId, text }),
 };
 
 export default api;
