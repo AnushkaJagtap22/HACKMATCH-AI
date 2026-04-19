@@ -29,62 +29,62 @@ api.interceptors.response.use(
 );
 
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
-  logout: () => api.post('/auth/logout'),
-  me: () => api.get('/auth/me'),
-  changePassword: (data) => api.post('/auth/change-password', data),
+  register: (data) => api.post('/api/auth/register', data),
+  login: (data) => api.post('/api/auth/login', data),
+  logout: () => api.post('/api/auth/logout'),
+  me: () => api.get('/api/auth/me'),
+  changePassword: (data) => api.post('/api/auth/change-password', data),
 };
 
 export const profileAPI = {
-  get: () => api.get('/profile'),
-  update: (data) => api.put('/profile', data),
+  get: () => api.get('/api/profile'),
+  update: (data) => api.put('/api/profile', data),
   uploadAvatar: (file) => {
     const form = new FormData();
     form.append('avatar', file);
-    return api.post('/profile/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/api/profile/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
   uploadResume: (file) => {
     const form = new FormData();
     form.append('resume', file);
-    return api.post('/profile/resume', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/api/profile/resume', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
-  addProject: (data) => api.post('/profile/projects', data),
-  updateProject: (id, data) => api.put(`/profile/projects/${id}`, data),
-  deleteProject: (id) => api.delete(`/profile/projects/${id}`),
-  getPublic: (username) => api.get(`/profile/${username}`),
-  sendOutreach: (id) => api.post(`/profile/${id}/outreach`),
+  addProject: (data) => api.post('/api/profile/projects', data),
+  updateProject: (id, data) => api.put(`/api/profile/projects/${id}`, data),
+  deleteProject: (id) => api.delete(`/api/profile/projects/${id}`),
+  getPublic: (username) => api.get(`/api/profile/${username}`),
+  sendOutreach: (id) => api.post(`/api/profile/${id}/outreach`),
 };
 
 export const usersAPI = {
-  discover: (params) => api.get('/users', { params }),
-  suggested: () => api.get('/users/suggested'),
+  discover: (params) => api.get('/api/users', { params }),
+  suggested: () => api.get('/api/users/suggested'),
 };
 
 export const matchAPI = {
-  run: (teamSize = 4) => api.post('/match', { teamSize }),
-  history: () => api.get('/match/history'),
-  accept: (teamId) => api.post('/match/accept', { teamId }),
-  reject: (teamId) => api.post('/match/reject', { teamId }),
-  rebalance: (teamId, memberIds) => api.post('/match/rebalance', { teamId, memberIds }),
-  respondInvite: (data) => api.post('/match/respond-invite', data),
+  run: (teamSize = 4) => api.post('/api/match', { teamSize }),
+  history: () => api.get('/api/match/history'),
+  accept: (teamId) => api.post('/api/match/accept', { teamId }),
+  reject: (teamId) => api.post('/api/match/reject', { teamId }),
+  rebalance: (teamId, memberIds) => api.post('/api/match/rebalance', { teamId, memberIds }),
+  respondInvite: (data) => api.post('/api/match/respond-invite', data),
 };
 
 export const chatAPI = {
-  send: (message) => api.post('/chat', { message }),
-  clearHistory: () => api.delete('/chat/history'),
+  send: (message) => api.post('/api/chat', { message }),
+  clearHistory: () => api.delete('/api/chat/history'),
 };
 
 export const notificationsAPI = {
-  get: () => api.get('/notifications'),
-  readAll: () => api.put('/notifications/read-all'),
-  readOne: (id) => api.put(`/notifications/${id}/read`),
-  clearAll: () => api.delete('/notifications/all'),
+  get: () => api.get('/api/notifications'),
+  readAll: () => api.put('/api/notifications/read-all'),
+  readOne: (id) => api.put(`/api/notifications/${id}/read`),
+  clearAll: () => api.delete('/api/notifications/all'),
 };
 
 export const teamChatAPI = {
-  getHistory: (teamId) => api.get(`/team-chat/history/${teamId}`),
-  send: (teamId, text) => api.post('/team-chat/send', { teamId, text }),
+  getHistory: (teamId) => api.get(`/api/team-chat/history/${teamId}`),
+  send: (teamId, text) => api.post('/api/team-chat/send', { teamId, text }),
 };
 
 export default api;
