@@ -95,4 +95,14 @@ server.listen(PORT, () => {
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? 'configured' : 'using rule-based fallback'}`);
 });
 
+const cors = require("cors");
+
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // local dev
+    "https://your-frontend.vercel.app" // production frontend
+  ],
+  credentials: true
+}));
+
 module.exports = { app, server };
