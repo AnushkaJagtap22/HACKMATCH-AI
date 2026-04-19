@@ -98,7 +98,7 @@ server.listen(PORT, () => {
 app.use(cors({
   origin: [
     "http://localhost:3000", // local dev
-    "https://your-frontend.vercel.app" // production frontend
+    "http://hackmatch-ai-sable.vercel.app/" // production frontend
   ],
   credentials: true
 }));
